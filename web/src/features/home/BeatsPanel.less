@@ -1,0 +1,51 @@
+@import '../../styles/mixins';
+
+.home-beats-panel {
+  position: relative;
+  width: 400px;
+  height: 480px;
+  border: 1px solid rgba(95,253,255,0.1);
+  border-radius: 10px;
+  background-color: rgba(0,0,0,0.1);
+
+  #beats {
+    position: relative;
+
+    .beat {
+      position: absolute;
+      width: 160px;
+    }
+  }
+
+  .bar {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 15px;
+    text-align: center;
+    opacity: 0.3;
+
+    div {
+      line-height: 0;
+    }
+
+    p {
+      margin-top: 20px;
+      color: #5ffdff;
+      font-size: 14px;
+      opacity: 0.4;
+    }
+  }
+}
+
+@keyframes flashing {
+  0%, 100% { opacity: 1.0; }
+  50%      { opacity: 0.5; }
+}
+
+@keyframes falling {
+  0%   { opacity: 0; top: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { opacity: 0; top: 380px; }
+}
