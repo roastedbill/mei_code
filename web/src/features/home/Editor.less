@@ -21,6 +21,63 @@
       animation: shake 200ms cubic-bezier(.36,.07,.19,.97) both;
     }
   }
+
+  .textBox {
+    position: absolute;
+    right: -700px;
+    bottom: 44px;
+    padding: 29px 170px 29px 41px;
+    transition: transform 0.5s;
+  }
+
+  .textVisible {
+    transform: translateX(-888px);
+  }
+
+  .textBoxBad {
+    box-shadow: 0 2px 20px 0 rgba(255,0,223,0.50);
+    border-radius: 4px;
+  }
+
+  .textBoxGood {
+    box-shadow: 0 2px 20px 0 rgba(255,40,0,0.50);
+    border-radius: 4px;
+  }
+
+  .textTitleGood {
+    font-family: Helvetica-Bold;
+    font-size: 16px;
+    color: #FFC62A;
+    letter-spacing: 0;
+    line-height: 24px;
+  }
+
+  .textTitleBad {
+    font-family: Helvetica-Bold;
+    font-size: 16px;
+    color: #FF4C7B;
+    letter-spacing: 0;
+    line-height: 24px;
+  }
+
+  .textContent {
+    font-family: Helvetica;
+    font-size: 16px;
+    color: #FFFFFF;
+    letter-spacing: 0;
+    line-height: 24px;
+  }
+
+  .characterIcon {
+    position: absolute;
+    right: -500px;
+    bottom: 0px;
+    transition: transform 0.7s;
+  }
+
+  .characterVisible {
+    transform: translateX(-500px);
+  }
 }
 
 .ant-form {
@@ -40,7 +97,7 @@
   10%, 90% {
     transform: translate3d((@shakiness * 1) * -1px, @shakiness * 1px, 0);
   }
-  
+
   20%, 80% {
     transform: translate3d((@shakiness * 2) * 1px, @shakiness * 1px, 0);
   }

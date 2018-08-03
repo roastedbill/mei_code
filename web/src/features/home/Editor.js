@@ -23,8 +23,15 @@ export class Editor extends Component {
   state = {
     fontSize: 12,
     shake: true,
-
-    setting: false
+    setting: false,
+    characterStatus: {
+      showError: false,
+      showSuccess: false,
+      showWelcome: false,
+      showFighting: false,
+    },
+    characterSize: 0,
+    characterIcon: null,
   }
 
   componentDidMount() {
@@ -43,6 +50,30 @@ export class Editor extends Component {
   }
 
   render() {
+    const {characterStatus, characterSize, characterIcon} = this.state;
+
+    let textBoxClassName = null;
+    let textTitle = null;
+    let shouldShowIcon = true;
+    if (!!characterStatus.showError) {
+      textBoxClassName = 'Bad';
+      textTitle = "TANTAN SAYS…";
+    } else if (!!characterStatus.showSuccess) {
+      // characterIcon = "images/loveyou.png";
+      textBoxClassName = 'Good';
+      textTitle = "TANTAN SAYS…";
+    } else if (!!characterStatus.showWelcome) {
+      // characterIcon = "images/goodday.png";
+      textBoxClassName = 'Good';
+      textTitle = "TANTAN SAYS…";
+    } else if (!!characterStatus.showFighting) {
+      // characterIcon = "images/comeon.png";
+      textBoxClassName = 'Good';
+      textTitle = "TANTAN SAYS…";
+    } else {
+      shouldShowIcon = false;
+    }
+
     return (
       <div className="home-editor fill vbox">
 
@@ -53,6 +84,21 @@ export class Editor extends Component {
         </div>
 
         <div ref={this.containerRef} className="editor fat"/>
+
+        <div>
+          <div className={`textBox ${shouldShowIcon ? `textBox${textBoxClassName} textVisible` : ''}`}>
+            <div className={`${shouldShowIcon ? `textTitle${textBoxClassName}` : ''}`}>
+            {textTitle}
+            </div>
+            <div className={'textContent'}>
+            Could you give me an example of the improvements you have mentioned?<br/>
+            This painting is a marvellous example of her work.
+            </div>
+          </div>
+          <div className={`characterIcon ${shouldShowIcon ? 'characterVisible' : ''}`}>
+            <img width={characterSize} height={characterSize} src={characterIcon} />
+          </div>
+        </div>
 
         {/* setting panel */}
         <Modal
@@ -132,56 +178,74 @@ export class Editor extends Component {
     const setModelMarkers = monaco.editor.setModelMarkers;
     monaco.editor.setModelMarkers = (model, owner, markers) => {
       setModelMarkers.call(monaco.editor, model, owner, markers);
-      if(markers) {
-
-        // clear all widgets
-        this._widgets.forEach(widget => {
-          this.editor.removeContentWidget(widget);
-        });
-
-        // get position of last error of each line
-        const positions = markers.reduce(([lastLine, ...rest], marker) => {
-          if(!lastLine) {
-            return [ {line:marker.endLineNumber, column:marker.endColumn}, ...rest ];
-          }
-          else if(lastLine.line !== marker.endLineNumber) {
-            return [ {line:marker.endLineNumber, column:marker.endColumn}, lastLine, ...rest ];
-          }
-          else if(lastLine.column < marker.endColumn) {
-            return [ {line:marker.endLineNumber, column:marker.endColumn}, ...rest ];
-          }
-          else {
-            return [ lastLine, ...rest ]
-          }
-        }, []).reverse();
-
+      if (markers && markers.length > 0) {
         // create new widget
-        this._widgets = positions.map(({line, column}) => {
-          const widget = {
-            domNode: null,
-            getId: () => `widget-${line}-${column}`,
-            getDomNode: function() {
-              if (!this.domNode) {
-                this.domNode = document.createElement('div');
-                this.domNode.className = 'errorWidget';
-                this.domNode.innerHTML = '<img src="https://tu.jiuwa.net/pic/20171129/1511964433976429.gif"/>';
-              }
-              return this.domNode;
-            },
-            getPosition: () => ({
-              position: {
-                lineNumber: line,
-                column: column
-              },
-              preference: [
-                monaco.editor.ContentWidgetPositionPreference.BELOW
-              ]
-            })
+        this.setState({
+          characterStatus: {
+            ...this.state.characterStatus,
+            showError: true,
+          },
+          characterSize: 444,
+          characterIcon: "images/evil.png",
+        });
+        // // clear all widgets
+        // this._widgets.forEach(widget => {
+        //   this.editor.removeContentWidget(widget);
+        // });
+        //
+        // // get position of last error of each line
+        // const positions = markers.reduce(([lastLine, ...rest], marker) => {
+        //   if(!lastLine) {
+        //     return [ {line:marker.endLineNumber, column:marker.endColumn}, ...rest ];
+        //   }
+        //   else if(lastLine.line !== marker.endLineNumber) {
+        //     return [ {line:marker.endLineNumber, column:marker.endColumn}, lastLine, ...rest ];
+        //   }
+        //   else if(lastLine.column < marker.endColumn) {
+        //     return [ {line:marker.endLineNumber, column:marker.endColumn}, ...rest ];
+        //   }
+        //   else {
+        //     return [ lastLine, ...rest ]
+        //   }
+        // }, []).reverse();
+        //
+        // // create new widget
+        // this._widgets = positions.map(({line, column}) => {
+        //   const widget = {
+        //     domNode: null,
+        //     getId: () => `widget-${line}-${column}`,
+        //     getDomNode: function() {
+        //       if (!this.domNode) {
+        //         this.domNode = document.createElement('div');
+        //         this.domNode.className = 'errorWidget';
+        //         this.domNode.innerHTML = '<img width=444 height=444 src="images/evil.png" />';
+        //       }
+        //       return this.domNode;
+        //     },
+        //     getPosition: () => ({
+        //       position: {
+        //         lineNumber: line,
+        //         column: column
+        //       },
+        //       preference: [
+        //         monaco.editor.ContentWidgetPositionPreference.BELOW
+        //       ]
+        //     })
+        //   }
+        //
+        //   this.editor.addContentWidget(widget);
+        //   return widget;
+        // })
+      }
+      else
+      {
+        console.log('fixed errors');
+        this.setState({
+          characterStatus: {
+            ...this.state.characterStatus,
+            showError: false,
           }
-
-          this.editor.addContentWidget(widget);
-          return widget;
-        })
+        });
       }
     }
 
