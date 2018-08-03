@@ -6,6 +6,9 @@ import * as actions from './redux/actions';
 
 import * as monaco from 'monaco-editor'
 
+import { Modal, Button, Form, Switch } from 'antd';
+import 'antd/dist/antd.css';
+
 export class Editor extends Component {
   static propTypes = {
     home: PropTypes.object.isRequired,
@@ -14,8 +17,12 @@ export class Editor extends Component {
 
   containerRef = React.createRef();
   editor = null;
+
   state = {
-    fontSize: 12
+    fontSize: 12,
+    shake: true,
+
+    setting: false
   }
 
   componentDidMount() {
@@ -29,8 +36,38 @@ export class Editor extends Component {
 
   render() {
     return (
-      <div ref={this.containerRef} className="home-editor fill"></div>
+      <div className="home-editor fill vbox">
+
+        <div className="controls hbox">
+          <div className="fat"></div>
+          <Button onClick={() => this.openSettingPanel(true)}>Settings</Button>
+        </div>
+
+        <div ref={this.containerRef} className="editor fat"/>
+
+        {/* setting panel */}
+        <Modal 
+          title="Setting" 
+          visible={this.state.setting}
+          onOk={() => this._onSettingOk()}
+          onCancel={() => this._onSettingCancel()}
+        >
+          <Form>
+            <Form.Item label="Shake">
+              <Switch checked={this.state.shake} onChange={checked => this.enableShaking(checked)}/>
+            </Form.Item>
+          </Form>
+        </Modal>
+      </div>
     );
+  }
+
+  openSettingPanel(open=true) {
+    this.setState({ ...this.state, setting:open });
+  }
+
+  enableShaking(enable=true) {
+    this.setState({ ...this.state, shake:enable });
   }
 
   changeFontSize({value=0, delta=0}={}) {
@@ -143,7 +180,9 @@ export class Editor extends Component {
   }
 
   _onKeyDown(e) {
-    this.shake();
+    if(this.state.shake) {
+      this.shake();
+    }
 
     // Cmd + P
     if(e.keyCode === 80 && e.metaKey) {
@@ -162,6 +201,14 @@ export class Editor extends Component {
       e.preventDefault();
       this.changeFontSize({value:12});
     }
+  }
+
+  _onSettingOk() {
+    this.openSettingPanel(false);
+  }
+
+  _onSettingCancel() {
+    this.openSettingPanel(false);
   }
 }
 
