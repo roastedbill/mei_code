@@ -1,12 +1,36 @@
 @import '../../styles/mixins';
 
 .home-editor {
-  .errorWidget {
-    transform: translateY(-50%) scaleX(-1);
+  .controls {
+    align-items: center;
+    padding: 10px;
+    background-color: #000;
+    border-bottom: 1px solid #333;
+
+    h1 {
+      color: #fff;
+    }
   }
 
-  &.shake {
-    animation: shake 200ms cubic-bezier(.36,.07,.19,.97) both;
+  .editor {
+    .errorWidget {
+      transform: translateY(-50%) scaleX(-1);
+    }
+
+    &.shake {
+      animation: shake 200ms cubic-bezier(.36,.07,.19,.97) both;
+    }
+  }
+}
+
+.ant-form {
+  .ant-form-item-label {
+    width: 100px;
+    margin-right: 10px;
+  }
+
+  .ant-form-item-control-wrapper {
+    display: inline-block;
   }
 }
 
