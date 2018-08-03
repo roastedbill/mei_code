@@ -4,4 +4,28 @@
   .errorWidget {
     transform: translateY(-50%) scaleX(-1);
   }
+
+  &.shake {
+    animation: shake 200ms cubic-bezier(.36,.07,.19,.97) both;
+  }
+}
+
+@shakiness: 10;
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d((@shakiness * 1) * -1px, @shakiness * 1px, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d((@shakiness * 2) * 1px, @shakiness * 1px, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d((@shakiness * 4) * -1px, @shakiness * -1px, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d((@shakiness * 4) * 1px, @shakiness * -1px, 0);
+  }
 }

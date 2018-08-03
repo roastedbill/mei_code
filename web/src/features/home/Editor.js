@@ -48,8 +48,28 @@ export class Editor extends Component {
     }
   }
 
+  shake() {
+    const el = this.containerRef.current;
+    if(el) {
+      el.classList.add('shake');
+      setTimeout(() => el.classList.remove('shake'), 200);
+    }
+  }
+
   _initEditor() {
     const el = this.containerRef.current;
+
+    // validation settings
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+      noSemanticValidation: true,
+      noSyntaxValidation: false
+    });
+
+    // compiler options
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+      target: monaco.languages.typescript.ScriptTarget.ES6,
+      allowNonTsExtensions: true
+    });
 
     // create the editor
     this.editor = monaco.editor.create(el, {
@@ -123,6 +143,8 @@ export class Editor extends Component {
   }
 
   _onKeyDown(e) {
+    this.shake();
+
     // Cmd + P
     if(e.keyCode === 80 && e.metaKey) {
       e.preventDefault();
