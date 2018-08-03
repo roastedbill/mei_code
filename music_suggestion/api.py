@@ -15,5 +15,10 @@ def get_music_suggestion(text):
 
 
 @app.route('/music/<path:filename>')
-def download_music(filename):
+def get_music(filename):
 	return send_from_directory('music', filename)
+
+
+@app.route('/file/<path:filename>')
+def get_file(filename):
+	return send_from_directory('file', filename)

@@ -11,3 +11,7 @@ Web IDE for peace and love.
 4. pip install ./music_suggestion/requirements.txt
 5. export FLASK_APP=api.py
 6. flask run (:5000 by default)
+7. apis:
+	/music_suggestion/<text>
+	/music/<path:filename>
+	/file/<path:filename>
