@@ -1,0 +1,54 @@
+{
+  "items": [
+    {
+      "name": "rain",
+      "mp4": "https://st1.asoftmurmur.com/assets/audio/main-rain.mp4",
+      "ogg": "https://st1.asoftmurmur.com/assets/audio/main-rain.ogg"
+    },
+    {
+      "name": "thunder",
+      "mp4": "https://st2.asoftmurmur.com/assets/audio/main-thunder.mp4",
+      "ogg": "https://st2.asoftmurmur.com/assets/audio/main-thunder.ogg"
+    },
+    {
+      "name": "fire",
+      "mp4": "https://st3.asoftmurmur.com/assets/audio/main-fire.mp4",
+      "ogg": "https://st3.asoftmurmur.com/assets/audio/main-fire.ogg"
+    },
+    {
+      "name": "coffeeShop",
+      "mp4": "https://st2.asoftmurmur.com/assets/audio/main-people.mp4",
+      "ogg": "https://st2.asoftmurmur.com/assets/audio/main-people.ogg"
+    },
+    {
+      "name": "waves",
+      "mp4": "https://st3.asoftmurmur.com/assets/audio/main-waves.mp4",
+      "ogg": "https://st3.asoftmurmur.com/assets/audio/main-waves.ogg"
+    },
+    {
+      "name": "wind",
+      "mp4": "https://st3.asoftmurmur.com/assets/audio/main-wind.mp4",
+      "ogg": "https://st3.asoftmurmur.com/assets/audio/main-wind.ogg"
+    },
+    {
+      "name": "birds",
+      "mp4": "https://st1.asoftmurmur.com/assets/audio/main-birds.mp4",
+      "ogg": "https://st1.asoftmurmur.com/assets/audio/main-birds.ogg"
+    },
+    {
+      "name": "crikets",
+      "mp4": "https://st2.asoftmurmur.com/assets/audio/main-crickets.mp4",
+      "ogg": "https://st2.asoftmurmur.com/assets/audio/main-crickets.ogg"
+    },
+    {
+      "name": "singingBowl",
+      "mp4": "https://st3.asoftmurmur.com/assets/audio/main-sbowl.mp4",
+      "ogg": "https://st3.asoftmurmur.com/assets/audio/main-sbowl.ogg"
+    },
+    {
+      "name": "whiteNoise",
+      "mp4": "https://st1.asoftmurmur.com/assets/audio/main-whitenoise.mp4",
+      "ogg": "https://st1.asoftmurmur.com/assets/audio/main-whitenoise.ogg"
+    }
+  ]
+}
