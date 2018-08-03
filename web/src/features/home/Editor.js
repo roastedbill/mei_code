@@ -79,8 +79,9 @@ export class Editor extends Component {
       <div className="home-editor fill vbox">
 
         <div className="controls hbox">
-          <input type="file" onChange={this.handleUploadMusic} />
+          {/* <input type="file" onChange={this.handleUploadMusic} /> */}
           <div className="fat"></div>
+          <Button onClick={() => this.run()}>Run</Button>
           <Button onClick={() => this.openSettingPanel(true)}>Settings</Button>
         </div>
 
@@ -148,6 +149,23 @@ export class Editor extends Component {
     if(el) {
       el.classList.add('shake');
       setTimeout(() => el.classList.remove('shake'), 200);
+    }
+  }
+
+  run() {
+    const script = this.editor.getValue();
+    try {
+      eval(script);
+      Modal.success({
+        title: 'Congratulations!',
+        content: 'Your code run successfully!!'
+      })
+    }
+    catch(e) {
+      Modal.error({
+        title: '-__-',
+        content: e.toString()
+      })
     }
   }
 
