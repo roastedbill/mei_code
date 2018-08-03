@@ -15,7 +15,7 @@ export class DefaultPage extends Component {
   render() {
     return (
       <div className="home-default-page">
-        <Editor/>
+        <Editor />
       </div>
     );
   }

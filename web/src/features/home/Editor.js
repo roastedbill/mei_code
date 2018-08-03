@@ -9,6 +9,8 @@ import * as monaco from 'monaco-editor'
 import { Modal, Button, Form, Switch } from 'antd';
 import 'antd/dist/antd.css';
 
+import * as beat from './beat/utils';
+
 export class Editor extends Component {
   static propTypes = {
     home: PropTypes.object.isRequired,
@@ -34,11 +36,18 @@ export class Editor extends Component {
     this.editor && this.editor.updateOptions(this.state);
   }
 
+  async handleUploadMusic(event) {
+    beat.handleFileUpload(event, (timestamps) => {
+      console.log('handleUploadMusic got response', JSON.stringify(timestamps));
+    });
+  }
+
   render() {
     return (
       <div className="home-editor fill vbox">
 
         <div className="controls hbox">
+          <input type="file" onChange={this.handleUploadMusic} />
           <div className="fat"></div>
           <Button onClick={() => this.openSettingPanel(true)}>Settings</Button>
         </div>
@@ -46,8 +55,8 @@ export class Editor extends Component {
         <div ref={this.containerRef} className="editor fat"/>
 
         {/* setting panel */}
-        <Modal 
-          title="Setting" 
+        <Modal
+          title="Setting"
           visible={this.state.setting}
           onOk={() => this._onSettingOk()}
           onCancel={() => this._onSettingCancel()}
