@@ -6,8 +6,9 @@ import * as actions from './redux/actions';
 
 import * as monaco from 'monaco-editor'
 
-import { Modal, Button, Form, Switch } from 'antd';
 import 'antd/dist/antd.css';
+import { Modal, Button, Form, Switch } from 'antd';
+import BeatsPanel from './BeatsPanel';
 
 import * as beat from './beat/utils';
 
@@ -84,6 +85,8 @@ export class Editor extends Component {
         </div>
 
         <div ref={this.containerRef} className="editor fat"/>
+
+        <BeatsPanel/>
 
         <div>
           <div className={`textBox ${shouldShowIcon ? `textBox${textBoxClassName} textVisible` : ''}`}>
