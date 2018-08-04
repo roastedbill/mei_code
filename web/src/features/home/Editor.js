@@ -70,7 +70,6 @@ export class Editor extends Component {
       textBoxClassName = 'Bad';
       textTitle = "TANTAN SAYS…";
     } else if (!!characterStatus.showSuccess) {
-      // characterIcon = "images/loveyou.png";
       textBoxClassName = 'Good';
       textTitle = "TANTAN SAYS…";
     } else if (!!characterStatus.showWelcome) {
@@ -218,8 +217,10 @@ export class Editor extends Component {
         // create new widget
         this.setState({
           characterStatus: {
-            ...this.state.characterStatus,
             showError: true,
+            showSuccess: false,
+            showWelcome: false,
+            showFighting: false,
           },
           characterSize: 444,
           characterIcon: "images/evil.png",
@@ -308,7 +309,7 @@ export class Editor extends Component {
           characterIcon: "images/comeon.png",
           characterSize: 500,
         })
-      }, 2000);
+      }, 1000);
     }
 
     // Cmd + P
@@ -327,6 +328,18 @@ export class Editor extends Component {
     else if(e.keyCode === 48 && e.metaKey) {
       e.preventDefault();
       this.changeFontSize({value:12});
+    }
+    else if (e.keyCode === 83 && e.metaKey) {
+      e.preventDefault();
+      if (!this.state.characterStatus.showError) {
+        this.setState({
+          characterStatus: {
+            showSuccess: true,
+          },
+          characterSize: 385,
+          characterIcon: "images/loveyou.png",
+        })
+      }
     }
   }
 
