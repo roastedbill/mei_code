@@ -23,9 +23,10 @@ export class Editor extends Component {
     actions: PropTypes.object.isRequired,
   };
 
-  containerRef = React.createRef();
+  containerRef      = React.createRef();
   narrativeVoiceRef = React.createRef();
-  editor = null;
+  bgMusicRef        = React.createRef();
+  editor            = null;
 
   state = {
     fontSize: 12,
@@ -54,6 +55,10 @@ export class Editor extends Component {
 
   componentDidUpdate() {
     this.editor && this.editor.updateOptions(this.state);
+
+    if(this.state.music && this.bgMusicRef.current && !this.bgMusicRef.current.src) {
+      this.bgMusicRef.current.src = `/musics/${this.state.music}.mp3`;
+    }
   }
 
   async handleUploadMusic(event) {
@@ -214,15 +219,30 @@ export class Editor extends Component {
                 <input className="moodInput" placeholder="How are you feeling now?" onKeyDown={e => {
                   if(e.keyCode === 13) {
                     e.preventDefault();
-                    this.setState({
-                      ...this.state,
-                      characterStatus: {
-                        ...this.state.characterStatus,
-                        showGreeting: false,
-                        showMusic: true,
-                        mood: e.target.value
+
+                    const mood = e.target.value.trim();
+                    if(mood) {
+                      const xhr = new XMLHttpRequest();
+                      xhr.onload = () => {
+                        const response = xhr.responseText;
+                        this.setState({
+                          ...this.state,
+                          music: response
+                        })
                       }
-                    })
+                      xhr.open('http://localhost:5000/music_suggestion/' + mood);
+                      xhr.send();
+
+                      this.setState({
+                        ...this.state,
+                        characterStatus: {
+                          ...this.state.characterStatus,
+                          showGreeting: false,
+                          showMusic: true,
+                          mood
+                        }
+                      })
+                    }
                   }
                 }}/>
               </div>
@@ -253,6 +273,7 @@ export class Editor extends Component {
         </Modal>
 
         <audio ref={this.narrativeVoiceRef} autoPlay/>
+        <audio ref={this.bgMusicRef} autoPlay/>
       </div>
     );
   }
