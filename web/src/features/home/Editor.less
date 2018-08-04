@@ -39,6 +39,94 @@
     }
   }
 
+  .icon {
+    position: absolute;
+    right: -500px;
+    bottom: 0px;
+    transition: transform 0.7s;
+
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .iconVisible {
+    transform: translateX(-500px);
+  }
+
+  .fightingIcon {
+    width: 500px;
+    height: 500px;
+
+    animation: fightingGif 400ms infinite;
+  }
+
+  @keyframes fightingGif {
+    0% { background-image: url(/images/comeon1.png); }
+    33% { background-image: url(/images/comeon2.png); }
+    66% { background-image: url(/images/comeon3.png); }
+    100% { background-image: url(/images/comeon2.png); }
+  }
+
+  .successIcon {
+    width: 385px;
+    height: 385px;
+
+    animation: successGif 400ms infinite;
+  }
+
+  @keyframes successGif {
+    0% {background-image: url(/images/success1.png);}
+    33% {background-image: url(/images/success2.png);}
+    66% {background-image: url(/images/success3.png);}
+    100% {background-image: url(/images/success2.png);}
+  }
+
+  .errorIcon {
+    width: 444px;
+    height: 444px;
+
+    animation: errorGif 1200ms infinite;
+  }
+
+  @keyframes errorGif {
+    0% {background-image: url(/images/error1.png);}
+    10% {background-image: url(/images/error2.png);}
+    19% {background-image: url(/images/error3.png);}
+    28% {background-image: url(/images/error4.png);}
+    37% {background-image: url(/images/error5.png);}
+    46% {background-image: url(/images/error6.png);}
+    55% {background-image: url(/images/error7.png);}
+    64% {background-image: url(/images/error8.png);}
+    73% {background-image: url(/images/error9.png);}
+    82% {background-image: url(/images/error10.png);}
+    91% {background-image: url(/images/error11.png);}
+    100% {background-image: url(/images/error12.png);}
+  }
+
+  .goodDayIcon {
+    width: 444px;
+    height: 444px;
+
+    animation: goodDayGif 1400ms infinite;
+  }
+
+  @keyframes goodDayGif {
+    0% {background-image: url(/images/goodday1.png);}
+    8% {background-image: url(/images/goodday2.png);}
+    16% {background-image: url(/images/goodday3.png);}
+    24% {background-image: url(/images/goodday4.png);}
+    32% {background-image: url(/images/goodday5.png);}
+    40% {background-image: url(/images/goodday6.png);}
+    48% {background-image: url(/images/goodday7.png);}
+    56% {background-image: url(/images/goodday8.png);}
+    64% {background-image: url(/images/goodday7.png);}
+    72% {background-image: url(/images/goodday8.png);}
+    80% {background-image: url(/images/goodday7.png);}
+    88% {background-image: url(/images/goodday8.png);}
+    96% {background-image: url(/images/goodday7.png);}
+    100% {background-image: url(/images/goodday8.png);}
+  }
+
   .textBox {
     position: absolute;
     right: -700px;
@@ -83,17 +171,6 @@
     color: #FFFFFF;
     letter-spacing: 0;
     line-height: 24px;
-  }
-
-  .characterIcon {
-    position: absolute;
-    right: -500px;
-    bottom: 0px;
-    transition: transform 0.7s;
-  }
-
-  .characterVisible {
-    transform: translateX(-500px);
   }
 
   .btnYes {
