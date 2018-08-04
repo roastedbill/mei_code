@@ -121,7 +121,7 @@ export class Editor extends Component {
 
         <BeatsPanel 
           className={this.gameClassNames} 
-          start={this.state.gameStart}
+          start={this.state.game}
         />
 
         <div>
@@ -134,9 +134,9 @@ export class Editor extends Component {
             This painting is a marvellous example of her work.
             </div>
             {shouldShowButtons && (
-              <div>
-                <btn className='btnYes' onClick={() => this.clickFightingButton(true)}>Yes Please</btn>
-                <btn className='btnNo' onClick={() => this.clickFightingButton(false)}>No Thanks</btn>
+              <div className="buttons">
+                <div className='btnYes' onClick={() => this.clickFightingButton(true)}>Yes Please</div>
+                <div className='btnNo' onClick={() => this.clickFightingButton(false)}>No Thanks</div>
               </div>
             )}
           </div>

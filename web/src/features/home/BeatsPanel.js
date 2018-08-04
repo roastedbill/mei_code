@@ -18,7 +18,7 @@ export default class BeatsPanel extends Component {
 
   static defaultProps = {
     start: false,
-    index: 1,
+    index: 0,
     difficulty: 2
   }
 
