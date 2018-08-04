@@ -192,19 +192,27 @@ export class Editor extends Component {
   }
 
   run() {
-    const script = this.editor.getValue();
-    try {
-      eval(script);
-      Modal.success({
-        title: 'Congratulations!',
-        content: 'Your code run successfully!!'
+    const script = this.editor.getValue().trim();
+    if(!script) {
+      Modal.warning({
+        title: '-__-',
+        content: 'Hey there is nothing in your code'
       })
     }
-    catch(e) {
-      Modal.error({
-        title: '-__-',
-        content: e.toString()
-      })
+    else {
+      try {
+        eval(script);
+        Modal.success({
+          title: 'Congratulations!',
+          content: 'Your code run successfully!!'
+        })
+      }
+      catch(e) {
+        Modal.error({
+          title: '-__-',
+          content: e.toString()
+        })
+      }
     }
   }
 
