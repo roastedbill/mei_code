@@ -28,11 +28,11 @@ export class Editor extends Component {
     characterStatus: {
       showError: false,
       showSuccess: false,
-      showWelcome: false,
+      showWelcome: true,
       showFighting: false,
     },
-    characterSize: 0,
-    characterIcon: null,
+    characterSize: 444,
+    characterIcon: "images/goodday.png",
   }
 
   componentDidMount() {
@@ -50,27 +50,35 @@ export class Editor extends Component {
     });
   }
 
+  clickFightingButton(needMusic) {
+    this.setState({
+      characterStatus: {
+        ...this.state.characterStatus,
+        showFighting: false,
+      }
+    })
+  }
+
   render() {
     const {characterStatus, characterSize, characterIcon} = this.state;
 
     let textBoxClassName = null;
     let textTitle = null;
     let shouldShowIcon = true;
+    let shouldShowButtons = false;
     if (!!characterStatus.showError) {
       textBoxClassName = 'Bad';
       textTitle = "TANTAN SAYS…";
     } else if (!!characterStatus.showSuccess) {
-      // characterIcon = "images/loveyou.png";
       textBoxClassName = 'Good';
       textTitle = "TANTAN SAYS…";
     } else if (!!characterStatus.showWelcome) {
-      // characterIcon = "images/goodday.png";
       textBoxClassName = 'Good';
       textTitle = "TANTAN SAYS…";
     } else if (!!characterStatus.showFighting) {
-      // characterIcon = "images/comeon.png";
       textBoxClassName = 'Good';
       textTitle = "TANTAN SAYS…";
+      shouldShowButtons = true;
     } else {
       shouldShowIcon = false;
     }
@@ -98,6 +106,12 @@ export class Editor extends Component {
             Could you give me an example of the improvements you have mentioned?<br/>
             This painting is a marvellous example of her work.
             </div>
+            {shouldShowButtons && (
+              <div>
+                <btn className='btnYes' onClick={() => this.clickFightingButton(true)}>Yes Please</btn>
+                <btn className='btnNo' onClick={() => this.clickFightingButton(false)}>No Thanks</btn>
+              </div>
+            )}
           </div>
           <div className={`characterIcon ${shouldShowIcon ? 'characterVisible' : ''}`}>
             <img width={characterSize} height={characterSize} src={characterIcon} />
@@ -186,7 +200,7 @@ export class Editor extends Component {
 
     // create the editor
     this.editor = monaco.editor.create(el, {
-      value: 'console.log("Hello, wo"rld")',
+      value: '',
       language: 'javascript',
       theme: 'vs-dark',
       fontSize: this.state.fontSize
@@ -203,8 +217,10 @@ export class Editor extends Component {
         // create new widget
         this.setState({
           characterStatus: {
-            ...this.state.characterStatus,
             showError: true,
+            showSuccess: false,
+            showWelcome: false,
+            showFighting: false,
           },
           characterSize: 444,
           characterIcon: "images/evil.png",
@@ -260,7 +276,6 @@ export class Editor extends Component {
       }
       else
       {
-        console.log('fixed errors');
         this.setState({
           characterStatus: {
             ...this.state.characterStatus,
@@ -276,6 +291,25 @@ export class Editor extends Component {
   _onKeyDown(e) {
     if(this.state.shake) {
       this.shake();
+    }
+
+    if (this.state.characterStatus.showWelcome) {
+      this.setState({
+        characterStatus: {
+          ...this.state.characterStatus,
+          showWelcome: false,
+        }
+      })
+      setTimeout(() => {
+        this.setState({
+          characterStatus: {
+            ...this.state.characterStatus,
+            showFighting: true,
+          },
+          characterIcon: "images/comeon.png",
+          characterSize: 500,
+        })
+      }, 1000);
     }
 
     // Cmd + P
@@ -294,6 +328,18 @@ export class Editor extends Component {
     else if(e.keyCode === 48 && e.metaKey) {
       e.preventDefault();
       this.changeFontSize({value:12});
+    }
+    else if (e.keyCode === 83 && e.metaKey) {
+      e.preventDefault();
+      if (!this.state.characterStatus.showError) {
+        this.setState({
+          characterStatus: {
+            showSuccess: true,
+          },
+          characterSize: 385,
+          characterIcon: "images/loveyou.png",
+        })
+      }
     }
   }
 
