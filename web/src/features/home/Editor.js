@@ -13,6 +13,10 @@ import BeatsPanel from './BeatsPanel';
 
 import * as beat from './beat/utils';
 
+let welcomed = false;
+
+let spoken = {};
+
 export class Editor extends Component {
   static propTypes = {
     home: PropTypes.object.isRequired,
@@ -20,6 +24,7 @@ export class Editor extends Component {
   };
 
   containerRef = React.createRef();
+  narrativeVoiceRef = React.createRef();
   editor = null;
 
   state = {
@@ -30,13 +35,14 @@ export class Editor extends Component {
     setting: false,
 
     characterStatus: {
-      showWelcome: true,
+      showWelcome: false,
       showGreeting: false,
       showMusic: false,
       showSyntaxError: false,
       showTestFail: false,
       showFinish: false,
       showPlayGame: false,
+      mood: null
     },
     iconClassName: "goodDayIcon",
   }
@@ -57,20 +63,10 @@ export class Editor extends Component {
   }
 
   clickFightingButton(flag) {
-    if (this.state.characterStatus.showGreeting) {
+    if (this.state.characterStatus.showPlayGame) {
       this.setState({
-        characterStatus: {
-          ...this.state.characterStatus,
-          showGreeting: false,
-        }
-      });
+        ...this.state,
 
-      if (flag) {
-
-      }
-    }
-    else if (this.state.characterStatus.showPlayGame) {
-      this.setState({
         characterStatus: {
           ...this.state.characterStatus,
           showPlayGame: false,
@@ -78,7 +74,7 @@ export class Editor extends Component {
       });
 
       if (flag) {
-
+        this.showGame();
       }
     }
   }
@@ -103,6 +99,15 @@ export class Editor extends Component {
     this.setState({ ...this.state, gameStart:true });
   }
 
+  playNarrative(src) {
+    let el = this.narrativeVoiceRef.current;
+    if(el && el.src !== src && !spoken[src]) {
+      spoken[src] = true;
+      el.src = src;
+    }
+
+  }
+
   render() {
     const {characterStatus, iconClassName} = this.state;
 
@@ -111,41 +116,58 @@ export class Editor extends Component {
     let textContent = null;
     let shouldShowIcon = true;
     let shouldShowButtons = false;
-    if (!!characterStatus.showWelcome) {
+    let shouldShowInput = false;
+    let mood = characterStatus.mood;
+
+    if (characterStatus.showWelcome) {
+      // 1. welcome
       textBoxClassName = 'Good';
       textTitle = "MOMO SAYS…";
       textContent = "Dear master, what a wonderful day! 😊";
+      this.playNarrative('/musics/welcome.mp3');
     }
-    else if (!!characterStatus.showGreeting) {
+    else if (characterStatus.showGreeting) {
+      // 2. (wait 10s, no interaction required) greeting, show input
       textBoxClassName = 'Good';
       textTitle = "MOMO SAYS…";
       textContent = "I'm always readily available to serve. How are you doing today? 🤔️";
+      shouldShowInput = true;
+      this.playNarrative('/musics/greeting.mp3');
     }
-    else if (!!characterStatus.showTestFail) {
-      textBoxClassName = 'Bad';
-      textTitle = "TANTAN SAYS…";
-      textContent = "For the last time, do not repeat such foolish mistake. 👿";
-    }
-    else if (!!characterStatus.showSyntaxError) {
-      textBoxClassName = 'Bad';
-      textTitle = "TANTAN SAYS…";
-      textContent = "Are you kidding me? You this piece of rubbish! You can't even complete something so simple. 👿";
-    }
-    else if (!!characterStatus.showMusic) {
+    else if (characterStatus.showMusic) {
+      // 3. play music
       textBoxClassName = 'Good';
       textTitle = "MOMO SAYS…";
       textContent = "This is my recommended song, hope it cheers you up ❤️";
+      this.playNarrative('/musics/music_suggestion.mp3');
     }
-    else if (!!characterStatus.showFinish) {
-      textBoxClassName = 'Good';
-      textTitle = "MOMO SAYS…";
-      textContent = "You are so fabulous, I like you so much 😘";
+    else if (characterStatus.showSyntaxError) {
+      // 4. show syntax error
+      textBoxClassName = 'Bad';
+      textTitle = "TANTAN SAYS…";
+      textContent = "Are you kidding me? You this piece of rubbish! You can't even complete something so simple. 👿";
+      this.playNarrative('/musics/syntax_error.mp3');
     }
-    else if (!!characterStatus.showPlayGame) {
+    // else if (!characterStatus.showFinish) {
+    //   // 5. save
+    //   textBoxClassName = 'Good';
+    //   textTitle = "MOMO SAYS…";
+    //   textContent = "You are so fabulous, I like you so much 😘";
+    // }
+    else if (characterStatus.showTestFail) {
+      // 5. show run error alert
+      textBoxClassName = 'Bad';
+      textTitle = "TANTAN SAYS…";
+      textContent = "For the last time, do not repeat such foolish mistake. 👿";
+      this.playNarrative('/musics/test_fail.mp3');
+    }
+    else if (characterStatus.showPlayGame) {
+      // 6. show play game modal
       textBoxClassName = 'Good';
       textTitle = "TANTAN SAYS…";
       textContent = "You are a genius, dear master. Can you play game with me? Pls Pls 🙏";
       shouldShowButtons = true;
+      this.playNarrative('/musics/play_game.mp3');
     } else {
       shouldShowIcon = false;
     }
@@ -170,12 +192,30 @@ export class Editor extends Component {
 
         <div>
           <div className={`textBox ${shouldShowIcon ? `textBox${textBoxClassName} textVisible` : ''}`}>
-            <div className={`${shouldShowIcon ? `textTitle${textBoxClassName}` : ''}`}>
-            {textTitle}
-            </div>
-            <div className={'textContent'}>
-            {textContent}
-            </div>
+            
+            <div className={`${shouldShowIcon ? `textTitle${textBoxClassName}` : ''}`}>{textTitle}</div>
+
+            <div className={'textContent'}>{textContent}</div>
+
+            {characterStatus.showGreeting && (
+              <div className="input">
+                <input className="moodInput" placeholder="How are you feeling now?" onKeyDown={e => {
+                  if(e.keyCode === 13) {
+                    e.preventDefault();
+                    this.setState({
+                      ...this.state,
+                      characterStatus: {
+                        ...this.state.characterStatus,
+                        showGreeting: false,
+                        showMusic: true,
+                        mood: e.target.value
+                      }
+                    })
+                  }
+                }}/>
+              </div>
+            )}
+
             {shouldShowButtons && (
               <div className="buttons">
                 <div className='btnYes' onClick={() => this.clickFightingButton(true)}>Yes Please</div>
@@ -199,6 +239,8 @@ export class Editor extends Component {
             </Form.Item>
           </Form>
         </Modal>
+
+        <audio ref={this.narrativeVoiceRef} autoPlay/>
       </div>
     );
   }
@@ -236,55 +278,42 @@ export class Editor extends Component {
 
   run() {
     const script = this.editor.getValue().trim();
-    if(!script) {
-      Modal.warning({
-        title: '-__-',
-        content: 'Hey there is nothing in your code'
-      })
+
+    try {
+      eval(script);
 
       this.setState({
+        ...this.state,
+
         characterStatus: {
           ...this.state.characterStatus,
           showWelcome: false,
           showGreeting: false,
           showMusic: false,
           showSyntaxError: false,
-          showTestFail: true,
+          showTestFail: false,
+          showFinish: false,
+          showPlayGame: true,
+        },
+        iconClassName: "successIcon",
+      })
+    }
+    catch(e) {
+      this.setState({
+        ...this.state,
+        characterStatus: {
+          showWelcome: false,
+          showGreeting: false,
+          showMusic: false,
+          showSyntaxError: true,
+          showTestFail: false,
           showFinish: false,
           showPlayGame: false,
         },
         iconClassName: "errorIcon",
-      })
+      });
     }
-    else {
-      try {
-        eval(script);
-        Modal.success({
-          title: 'Congratulations!',
-          content: 'Your code run successfully!!'
-        })
 
-        this.setState({
-          characterStatus: {
-            ...this.state.characterStatus,
-            showWelcome: false,
-            showGreeting: false,
-            showMusic: false,
-            showSyntaxError: false,
-            showTestFail: false,
-            showFinish: false,
-            showPlayGame: true,
-          },
-          iconClassName: "successIcon",
-        })
-      }
-      catch(e) {
-        Modal.error({
-          title: '-__-',
-          content: e.toString()
-        })
-      }
-    }
   }
 
   _initEditor() {
@@ -317,77 +346,35 @@ export class Editor extends Component {
     const setModelMarkers = monaco.editor.setModelMarkers;
     monaco.editor.setModelMarkers = (model, owner, markers) => {
       setModelMarkers.call(monaco.editor, model, owner, markers);
-      if (markers && markers.length > 0) {
-        // create new widget
-        this.setState({
-          characterStatus: {
-            showWelcome: false,
-            showGreeting: false,
-            showMusic: false,
-            showSyntaxError: true,
-            showTestFail: false,
-            showFinish: false,
-            showPlayGame: false,
-          },
-          iconClassName: "errorIcon",
-        });
-        // // clear all widgets
-        // this._widgets.forEach(widget => {
-        //   this.editor.removeContentWidget(widget);
-        // });
-        //
-        // // get position of last error of each line
-        // const positions = markers.reduce(([lastLine, ...rest], marker) => {
-        //   if(!lastLine) {
-        //     return [ {line:marker.endLineNumber, column:marker.endColumn}, ...rest ];
-        //   }
-        //   else if(lastLine.line !== marker.endLineNumber) {
-        //     return [ {line:marker.endLineNumber, column:marker.endColumn}, lastLine, ...rest ];
-        //   }
-        //   else if(lastLine.column < marker.endColumn) {
-        //     return [ {line:marker.endLineNumber, column:marker.endColumn}, ...rest ];
-        //   }
-        //   else {
-        //     return [ lastLine, ...rest ]
-        //   }
-        // }, []).reverse();
-        //
-        // // create new widget
-        // this._widgets = positions.map(({line, column}) => {
-        //   const widget = {
-        //     domNode: null,
-        //     getId: () => `widget-${line}-${column}`,
-        //     getDomNode: function() {
-        //       if (!this.domNode) {
-        //         this.domNode = document.createElement('div');
-        //         this.domNode.className = 'errorWidget';
-        //         this.domNode.innerHTML = '<img width=444 height=444 src="images/evil.png" />';
-        //       }
-        //       return this.domNode;
-        //     },
-        //     getPosition: () => ({
-        //       position: {
-        //         lineNumber: line,
-        //         column: column
-        //       },
-        //       preference: [
-        //         monaco.editor.ContentWidgetPositionPreference.BELOW
-        //       ]
-        //     })
-        //   }
-        //
-        //   this.editor.addContentWidget(widget);
-        //   return widget;
-        // })
-      }
-      else
-      {
-        this.setState({
-          characterStatus: {
-            ...this.state.characterStatus,
-            showSyntaxError: false,
-          }
-        });
+
+      let {showWelcome, showGreeting, showMusic} = this.state.characterStatus;
+      if(!showWelcome && !showGreeting && !showMusic) {
+        if (markers && markers.length > 0 ) {
+          // create new widget
+          this.setState({
+            ...this.state,
+            characterStatus: {
+              showWelcome: false,
+              showGreeting: false,
+              showMusic: false,
+              showSyntaxError: true,
+              showTestFail: false,
+              showFinish: false,
+              showPlayGame: false,
+            },
+            iconClassName: "errorIcon",
+          });
+        }
+        else
+        {
+          this.setState({
+            ...this.state,
+            characterStatus: {
+              ...this.state.characterStatus,
+              showSyntaxError: false,
+            }
+          });
+        }
       }
     }
 
@@ -399,52 +386,70 @@ export class Editor extends Component {
       this.shake();
     }
 
-    if (this.state.characterStatus.showWelcome) {
+    if (!welcomed) {
+      welcomed = true;
       this.setState({
+        ...this.state,
+        characterStatus: {
+          ...this.state.characterStatus,
+          showWelcome: true,
+        }
+      })
+    }
+
+    else if (this.state.characterStatus.showWelcome) {
+      this.setState({
+        ...this.state,
         characterStatus: {
           ...this.state.characterStatus,
           showWelcome: false,
-        }
+          showGreeting: true,
+        },
+        iconClassName: "fightingIcon",
       })
+    }
+    else if(this.state.characterStatus.showMusic) {
       setTimeout(() => {
         this.setState({
+          ...this.state,
           characterStatus: {
             ...this.state.characterStatus,
-            showGreeting: true,
+            showMusic: false
           },
-          iconClassName: "fightingIcon",
+          iconClassName: null
         })
       }, 1000);
     }
 
-    // Cmd + P
-    if(e.keyCode === 80 && e.metaKey) {
-      e.preventDefault();
-      this.editor.trigger('anyString', 'editor.action.quickCommand')
-    }
-    else if(e.keyCode === 187 && e.metaKey) {
-      e.preventDefault();
-      this.changeFontSize({delta:+2});
-    }
-    else if(e.keyCode === 189 && e.metaKey) {
-      e.preventDefault();
-      this.changeFontSize({delta:-2});
-    }
-    else if(e.keyCode === 48 && e.metaKey) {
-      e.preventDefault();
-      this.changeFontSize({value:12});
-    }
-    else if (e.keyCode === 83 && e.metaKey) {
-      e.preventDefault();
-      if (!this.state.characterStatus.showSyntaxError) {
-        this.setState({
-          characterStatus: {
-            showFinish: true,
-          },
-          iconClassName: "successIcon"
-        })
-      }
-    }
+    // // Cmd + P
+    // if(e.keyCode === 80 && e.metaKey) {
+    //   e.preventDefault();
+    //   this.editor.trigger('anyString', 'editor.action.quickCommand')
+    // }
+    // else if(e.keyCode === 187 && e.metaKey) {
+    //   e.preventDefault();
+    //   this.changeFontSize({delta:+2});
+    // }
+    // else if(e.keyCode === 189 && e.metaKey) {
+    //   e.preventDefault();
+    //   this.changeFontSize({delta:-2});
+    // }
+    // else if(e.keyCode === 48 && e.metaKey) {
+    //   e.preventDefault();
+    //   this.changeFontSize({value:12});
+    // }
+    // else if (e.keyCode === 83 && e.metaKey) {
+    //   e.preventDefault();
+    //   if (!this.state.characterStatus.showSyntaxError) {
+    //     this.setState({
+    //       ...this.state,
+    //       characterStatus: {
+    //         showFinish: true,
+    //       },
+    //       iconClassName: "successIcon"
+    //     })
+    //   }
+    // }
   }
 
   _onSettingOk() {
