@@ -30,10 +30,12 @@ export class Editor extends Component {
 
   state = {
     fontSize: 12,
-    shake: true,
+    shake: false,
     game: false,
     gameStart: false,
     setting: false,
+
+    playBgMusic: true,
 
     characterStatus: {
       showWelcome: false,
@@ -122,7 +124,30 @@ export class Editor extends Component {
       spoken[src] = true;
       el.src = src;
     }
+  }
 
+  get bgMusicControlClassNames() {
+    return {
+      visible: this.state.music,
+      play: this.state.playBgMusic
+    }
+  }
+
+  toggleBgMusic() {
+    const play = !this.state.playBgMusic;
+
+    this.setState({
+      ...this.state,
+      playBgMusic: play
+    });
+
+    if(play) {
+      this.bgMusicRef.current.play();
+    }
+    else {
+      this.bgMusicRef.current.pause();
+      this.bgMusicRef.current.currentTime();
+    }
   }
 
   render() {
@@ -225,12 +250,16 @@ export class Editor extends Component {
                       const xhr = new XMLHttpRequest();
                       xhr.onload = () => {
                         const response = xhr.responseText;
-                        this.setState({
-                          ...this.state,
-                          music: response
-                        })
+                        if(response) {
+                          setTimeout(() => {
+                            this.setState({
+                              ...this.state,
+                              music: response
+                            })
+                          }, 7000);
+                        }
                       }
-                      xhr.open('http://localhost:5000/music_suggestion/' + mood);
+                      xhr.open('GET', 'http://localhost:5000/music_suggestion/' + mood);
                       xhr.send();
 
                       this.setState({
@@ -255,7 +284,7 @@ export class Editor extends Component {
               </div>
             )}
           </div>
-          <div className={`icon ${iconClassName} ${shouldShowIcon ? 'iconVisible' : ''}`} />
+          <div className={`icon ${iconClassName} ${shouldShowIcon ? 'iconVisible' : ''}`}/>
         </div>
 
         {/* setting panel */}
@@ -272,8 +301,13 @@ export class Editor extends Component {
           </Form>
         </Modal>
 
+        <div 
+          className={cls("musicControl", this.bgMusicControlClassNames)}
+          onClick={() => this.toggleBgMusic()}
+        ></div>
+
         <audio ref={this.narrativeVoiceRef} autoPlay/>
-        <audio ref={this.bgMusicRef} autoPlay/>
+        <audio ref={this.bgMusicRef} autoPlay volumn="0.5"/>
       </div>
     );
   }
