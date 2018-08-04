@@ -3,24 +3,42 @@ import PropTypes from 'prop-types';
 
 import allBeats from '../../configs/beats.json';
 
-const i = 1;
-const next = 3;
+
+let t0 = 0;
 
 
 export default class BeatsPanel extends Component {
   static propTypes = {
-    index: PropTypes.number
+    start: PropTypes.bool,
+    index: PropTypes.number,
+    difficulty: PropTypes.number
   };
 
-  audioRef = React.createRef();
-  barRef = React.createRef();
+  static defaultProps = {
+    start: false,
+    index: 1,
+    difficulty: 2
+  }
 
-  get beats() {
-    return allBeats.musics[i].beats;
+  audioRef = React.createRef();
+  barRef   = React.createRef();
+  scoreRef = React.createRef();
+
+  state = {
+    beats: allBeats.musics[this.props.index].beats.reduce((result, t, i) => {
+      if(i % this.props.difficulty === 0) {
+        return [ ...result, t ]
+      }
+      else return result;
+    }, []),
+
+    totalScore: 0,
+    lastScore: 0,
+    bestScore: 0
   }
 
   get url() {
-    return "/files/" + allBeats.musics[i].file
+    return "/files/" + allBeats.musics[this.props.index].file
   }
 
   createNewBeat(i, duration) {
@@ -38,6 +56,7 @@ export default class BeatsPanel extends Component {
     setTimeout(() => {
       this._container.removeChild(beat);
       
+      // trigger bar's flash animation
       const bar = this.barRef.current;
       if(bar) {
         bar.classList.add('hit');
@@ -46,9 +65,9 @@ export default class BeatsPanel extends Component {
     }, duration);
 
     // schedule next beats
-    let beats = this.beats;
+    let beats = this.state.beats;
     let t0 = beats[i] * 1000;
-    let t1 = beats[i+next] * 1000;
+    let t1 = beats[i+1] * 1000;
     if(t1) setTimeout(() => this.createNewBeat(i+1, duration), t1-t0);
   }
 
@@ -56,19 +75,51 @@ export default class BeatsPanel extends Component {
     const duration = 2000;
     this.createNewBeat(0, duration);
     setTimeout(() => this.audioRef.current.play(), duration);
+    t0 = (new Date().getTime() + duration)/1000;
+  }
+
+  addScore(score) {
+    this.setState({
+      ...this.state,
+      lastScore: score,
+      totalScore: this.state.totalScore + score,
+      bestScore: Math.max(this.state.bestScore, score)
+    });
+
+    this.scoreRef.current.classList.add('play');
+    setTimeout(() => this.scoreRef.current.classList.remove('play'), 500);
   }
 
   componentDidMount() {
     this._container = document.getElementById('beats');
+    document.addEventListener('keydown', e => this._onKeyDown(e));
   }
 
-  _onAudioLoaded() {
-    this.startFallingBeats();
+  componentDidUpdate(preProps) {
+    if(!preProps.start && this.props.start) {
+      this.startFallingBeats();
+    }
+  }
+
+  _onKeyDown(e) {
+    const dt = new Date().getTime()/1000 - t0;
+    const range = 0.3;
+
+    let score = Math.min( ...this.state.beats.map(t => Math.abs(t-dt)) )
+    if(0 < score && score < range) {
+      const finalScore = Math.round( ((range - score) * 1200 + 100)/10 )*10;
+      this.addScore(finalScore);
+    }
   }
 
   render() {
     return (
       <div className="home-beats-panel">
+
+        <div className="wave">
+          <img src="/images/soundwave.png"/>
+          <img src="/images/soundwave.png"/>
+        </div>
 
         {/* beats */}
         <div className="beats fill" id="beats"></div>
@@ -80,12 +131,11 @@ export default class BeatsPanel extends Component {
           <p>STRIKE BY TYPING</p>
         </div>
 
-        <audio 
-          ref={this.audioRef} 
-          preload="auto"
-          src={this.url} 
-          onCanPlayThrough={() => this._onAudioLoaded()}
-        />
+        <div className="totalScore">NOW: { this.state.totalScore }</div>
+        <div className="currentScore" ref={this.scoreRef}>+ { this.state.lastScore }</div>
+        <div className="bestScore">BEST: { this.state.bestScore }</div>
+
+        <audio ref={this.audioRef} preload="auto" src={this.url}/>
       </div>
     );
   }

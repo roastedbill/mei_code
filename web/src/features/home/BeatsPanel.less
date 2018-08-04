@@ -7,6 +7,20 @@
   border: 1px solid rgba(95,253,255,0.1);
   border-radius: 10px;
   background-color: rgba(0,0,0,0.1);
+  
+  .wave {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+
+    img {
+      height: 200px;
+      animation: scroll 6s infinite;
+      animation-timing-function: linear;
+    }
+  }
 
   #beats {
     position: relative;
@@ -16,6 +30,36 @@
       width: 160px;
       animation-name: falling;
       animation-timing-function: cubic-bezier(0.590, 0.000, 0.905, 0.750);
+    }
+  }
+
+  .totalScore {
+    position: absolute;
+    left: 40px;
+    top: 45px;
+    color: #5FFDFF;
+    font-size: 20px;
+  }
+
+  .bestScore {
+    position: absolute;
+    right: 40px;
+    top: 48px;
+    opacity: 0.4;
+    color: #5FFDFF;
+    font-size: 16px;
+  }
+
+  .currentScore {
+    position: absolute;
+    left: 150px;
+    top: 60px;
+    opacity: 0;
+    color: #5FFDFF;
+    font-size: 16px;
+
+    &.play {
+      animation: score 500ms;
     }
   }
 
@@ -59,4 +103,15 @@
   90%  { filter: brightness(1); }
   95%  { opacity: 1; }
   100% { filter: brightness(5); opacity: 0; top: 350px; }
+}
+
+@keyframes score {
+  0% { transform: translateY(0px); opacity: 0; }
+  30% { opacity: 0.7; }
+  100% { transform: translateY(-30px); opacity: 0; }
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }
