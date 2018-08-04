@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import cls from 'classnames';
 
 import allBeats from '../../configs/beats.json';
 
 
 let t0 = 0;
+let scheduleId;
 
 
 export default class BeatsPanel extends Component {
@@ -68,7 +70,12 @@ export default class BeatsPanel extends Component {
     let beats = this.state.beats;
     let t0 = beats[i] * 1000;
     let t1 = beats[i+1] * 1000;
-    if(t1) setTimeout(() => this.createNewBeat(i+1, duration), t1-t0);
+    if(t1) {
+      scheduleId = setTimeout(
+        () => this.createNewBeat(i+1, duration), 
+        t1-t0
+      );
+    }
   }
 
   startFallingBeats() {
@@ -76,6 +83,14 @@ export default class BeatsPanel extends Component {
     this.createNewBeat(0, duration);
     setTimeout(() => this.audioRef.current.play(), duration);
     t0 = (new Date().getTime() + duration)/1000;
+  }
+
+  stopFallingBeats() {
+    clearTimeout(scheduleId);
+
+    const a = this.audioRef.current;
+    a.pause();
+    a.currentTime = 0;
   }
 
   addScore(score) {
@@ -99,6 +114,9 @@ export default class BeatsPanel extends Component {
     if(!preProps.start && this.props.start) {
       this.startFallingBeats();
     }
+    else if(preProps.start && !this.props.start) {
+      this.stopFallingBeats();
+    }
   }
 
   _onKeyDown(e) {
@@ -114,7 +132,7 @@ export default class BeatsPanel extends Component {
 
   render() {
     return (
-      <div className="home-beats-panel">
+      <div className={cls(this.props.className, "home-beats-panel")}>
 
         <div className="wave">
           <img src="/images/soundwave.png"/>

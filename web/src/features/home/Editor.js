@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import cls from 'classnames';
 import * as actions from './redux/actions';
 
 import * as monaco from 'monaco-editor'
@@ -24,7 +25,10 @@ export class Editor extends Component {
   state = {
     fontSize: 12,
     shake: true,
+    game: false,
+    gameStart: false,
     setting: false,
+
     characterStatus: {
       showError: false,
       showSuccess: false,
@@ -59,6 +63,26 @@ export class Editor extends Component {
     })
   }
 
+  get gameClassNames() {
+    let classes = {
+      'home-beats-panel': true,
+      'visible': this.state.game
+    }
+    return classes;
+  }
+
+  showGame(show=true) {
+    this.setState({ ...this.state, game:show });
+  }
+
+  toggleGame() {
+    this.showGame(!this.state.game);
+  }
+
+  startGame() {
+    this.setState({ ...this.state, gameStart:true });
+  }
+
   render() {
     const {characterStatus, characterSize, characterIcon} = this.state;
 
@@ -89,13 +113,17 @@ export class Editor extends Component {
         <div className="controls hbox">
           {/* <input type="file" onChange={this.handleUploadMusic} /> */}
           <div className="fat"></div>
+          <Button onClick={() => this.toggleGame()}>Game</Button>
           <Button onClick={() => this.run()}>Run</Button>
           <Button onClick={() => this.openSettingPanel(true)}>Settings</Button>
         </div>
 
         <div ref={this.containerRef} className="editor fat"/>
 
-        <BeatsPanel/>
+        <BeatsPanel 
+          className={this.gameClassNames} 
+          start={this.state.gameStart}
+        />
 
         <div>
           <div className={`textBox ${shouldShowIcon ? `textBox${textBoxClassName} textVisible` : ''}`}>

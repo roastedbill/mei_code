@@ -30,7 +30,13 @@
   .home-beats-panel {
     position: absolute;
     top: 70px;
-    right: 20px;
+    right: -400px;
+
+    transition: right 500ms;
+
+    &.visible {
+      right: 20px;
+    }
   }
 
   .textBox {
