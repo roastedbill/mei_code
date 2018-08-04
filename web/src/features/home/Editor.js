@@ -31,8 +31,7 @@ export class Editor extends Component {
       showWelcome: true,
       showFighting: false,
     },
-    characterSize: 444,
-    characterIcon: "images/goodday.png",
+    iconClassName: "goodDayIcon",
   }
 
   componentDidMount() {
@@ -60,7 +59,7 @@ export class Editor extends Component {
   }
 
   render() {
-    const {characterStatus, characterSize, characterIcon} = this.state;
+    const {characterStatus, iconClassName} = this.state;
 
     let textBoxClassName = null;
     let textTitle = null;
@@ -113,9 +112,7 @@ export class Editor extends Component {
               </div>
             )}
           </div>
-          <div className={`characterIcon ${shouldShowIcon ? 'characterVisible' : ''}`}>
-            <img width={characterSize} height={characterSize} src={characterIcon} />
-          </div>
+          <div className={`icon ${iconClassName} ${shouldShowIcon ? 'iconVisible' : ''}`} />
         </div>
 
         {/* setting panel */}
@@ -222,8 +219,7 @@ export class Editor extends Component {
             showWelcome: false,
             showFighting: false,
           },
-          characterSize: 444,
-          characterIcon: "images/evil.png",
+          iconClassName: "errorIcon",
         });
         // // clear all widgets
         // this._widgets.forEach(widget => {
@@ -306,8 +302,7 @@ export class Editor extends Component {
             ...this.state.characterStatus,
             showFighting: true,
           },
-          characterIcon: "images/comeon.png",
-          characterSize: 500,
+          iconClassName: "fightingIcon",
         })
       }, 1000);
     }
@@ -336,8 +331,7 @@ export class Editor extends Component {
           characterStatus: {
             showSuccess: true,
           },
-          characterSize: 385,
-          characterIcon: "images/loveyou.png",
+          iconClassName: "successIcon"
         })
       }
     }
