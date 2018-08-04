@@ -1,10 +1,12 @@
 from flask import Flask
 from flask import send_from_directory
+from flask_cors import CORS
 import music_suggestion
 
 
 app = Flask(__name__)
 app.config.setdefault('WTF_CSRF_METHODS', ['POST', 'PUT', 'PATCH'])
+CORS(app)
 
 
 @app.route('/music_suggestion/<text>')
