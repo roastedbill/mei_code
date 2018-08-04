@@ -92,7 +92,19 @@ export class Editor extends Component {
   }
 
   showGame(show=true) {
-    this.setState({ ...this.state, game:show });
+    this.setState({
+      ...this.state,
+      game:show,
+      characterStatus:{
+        showWelcome: false,
+        showGreeting: false,
+        showMusic: false,
+        showSyntaxError: false,
+        showTestFail: false,
+        showFinish: false,
+        showPlayGame: false,
+      }
+    });
   }
 
   toggleGame() {
