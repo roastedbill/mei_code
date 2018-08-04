@@ -30,10 +30,13 @@ export class Editor extends Component {
     setting: false,
 
     characterStatus: {
-      showError: false,
-      showSuccess: false,
       showWelcome: true,
-      showFighting: false,
+      showGreeting: false,
+      showMusic: false,
+      showSyntaxError: false,
+      showTestFail: false,
+      showFinish: false,
+      showPlayGame: false,
     },
     iconClassName: "goodDayIcon",
   }
@@ -53,13 +56,31 @@ export class Editor extends Component {
     });
   }
 
-  clickFightingButton(needMusic) {
-    this.setState({
-      characterStatus: {
-        ...this.state.characterStatus,
-        showFighting: false,
+  clickFightingButton(flag) {
+    if (this.state.characterStatus.showGreeting) {
+      this.setState({
+        characterStatus: {
+          ...this.state.characterStatus,
+          showGreeting: false,
+        }
+      });
+
+      if (flag) {
+
       }
-    })
+    }
+    else if (this.state.characterStatus.showPlayGame) {
+      this.setState({
+        characterStatus: {
+          ...this.state.characterStatus,
+          showPlayGame: false,
+        }
+      });
+
+      if (flag) {
+
+      }
+    }
   }
 
   get gameClassNames() {
@@ -87,20 +108,43 @@ export class Editor extends Component {
 
     let textBoxClassName = null;
     let textTitle = null;
+    let textContent = null;
     let shouldShowIcon = true;
     let shouldShowButtons = false;
-    if (!!characterStatus.showError) {
+    if (!!characterStatus.showWelcome) {
+      textBoxClassName = 'Good';
+      textTitle = "MOMO SAYS…";
+      textContent = "Dear master, what a wonderful day! 😊";
+    }
+    else if (!!characterStatus.showGreeting) {
+      textBoxClassName = 'Good';
+      textTitle = "MOMO SAYS…";
+      textContent = "I'm always readily available to serve. How are you doing today? 🤔️";
+    }
+    else if (!!characterStatus.showTestFail) {
       textBoxClassName = 'Bad';
       textTitle = "TANTAN SAYS…";
-    } else if (!!characterStatus.showSuccess) {
+      textContent = "For the last time, do not repeat such foolish mistake. 👿";
+    }
+    else if (!!characterStatus.showSyntaxError) {
+      textBoxClassName = 'Bad';
+      textTitle = "TANTAN SAYS…";
+      textContent = "Are you kidding me? You this piece of rubbish! You can't even complete something so simple. 👿";
+    }
+    else if (!!characterStatus.showMusic) {
+      textBoxClassName = 'Good';
+      textTitle = "MOMO SAYS…";
+      textContent = "This is my recommended song, hope it cheers you up ❤️";
+    }
+    else if (!!characterStatus.showFinish) {
+      textBoxClassName = 'Good';
+      textTitle = "MOMO SAYS…";
+      textContent = "You are so fabulous, I like you so much 😘";
+    }
+    else if (!!characterStatus.showPlayGame) {
       textBoxClassName = 'Good';
       textTitle = "TANTAN SAYS…";
-    } else if (!!characterStatus.showWelcome) {
-      textBoxClassName = 'Good';
-      textTitle = "TANTAN SAYS…";
-    } else if (!!characterStatus.showFighting) {
-      textBoxClassName = 'Good';
-      textTitle = "TANTAN SAYS…";
+      textContent = "You are a genius, dear master. Can you play game with me? Pls Pls 🙏";
       shouldShowButtons = true;
     } else {
       shouldShowIcon = false;
@@ -119,8 +163,8 @@ export class Editor extends Component {
 
         <div ref={this.containerRef} className="editor fat"/>
 
-        <BeatsPanel 
-          className={this.gameClassNames} 
+        <BeatsPanel
+          className={this.gameClassNames}
           start={this.state.game}
         />
 
@@ -130,8 +174,7 @@ export class Editor extends Component {
             {textTitle}
             </div>
             <div className={'textContent'}>
-            Could you give me an example of the improvements you have mentioned?<br/>
-            This painting is a marvellous example of her work.
+            {textContent}
             </div>
             {shouldShowButtons && (
               <div className="buttons">
@@ -198,6 +241,20 @@ export class Editor extends Component {
         title: '-__-',
         content: 'Hey there is nothing in your code'
       })
+
+      this.setState({
+        characterStatus: {
+          ...this.state.characterStatus,
+          showWelcome: false,
+          showGreeting: false,
+          showMusic: false,
+          showSyntaxError: false,
+          showTestFail: true,
+          showFinish: false,
+          showPlayGame: false,
+        },
+        iconClassName: "errorIcon",
+      })
     }
     else {
       try {
@@ -205,6 +262,20 @@ export class Editor extends Component {
         Modal.success({
           title: 'Congratulations!',
           content: 'Your code run successfully!!'
+        })
+
+        this.setState({
+          characterStatus: {
+            ...this.state.characterStatus,
+            showWelcome: false,
+            showGreeting: false,
+            showMusic: false,
+            showSyntaxError: false,
+            showTestFail: false,
+            showFinish: false,
+            showPlayGame: true,
+          },
+          iconClassName: "successIcon",
         })
       }
       catch(e) {
@@ -250,10 +321,13 @@ export class Editor extends Component {
         // create new widget
         this.setState({
           characterStatus: {
-            showError: true,
-            showSuccess: false,
             showWelcome: false,
-            showFighting: false,
+            showGreeting: false,
+            showMusic: false,
+            showSyntaxError: true,
+            showTestFail: false,
+            showFinish: false,
+            showPlayGame: false,
           },
           iconClassName: "errorIcon",
         });
@@ -311,7 +385,7 @@ export class Editor extends Component {
         this.setState({
           characterStatus: {
             ...this.state.characterStatus,
-            showError: false,
+            showSyntaxError: false,
           }
         });
       }
@@ -336,7 +410,7 @@ export class Editor extends Component {
         this.setState({
           characterStatus: {
             ...this.state.characterStatus,
-            showFighting: true,
+            showGreeting: true,
           },
           iconClassName: "fightingIcon",
         })
@@ -362,10 +436,10 @@ export class Editor extends Component {
     }
     else if (e.keyCode === 83 && e.metaKey) {
       e.preventDefault();
-      if (!this.state.characterStatus.showError) {
+      if (!this.state.characterStatus.showSyntaxError) {
         this.setState({
           characterStatus: {
-            showSuccess: true,
+            showFinish: true,
           },
           iconClassName: "successIcon"
         })
