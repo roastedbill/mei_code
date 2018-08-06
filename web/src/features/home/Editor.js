@@ -146,7 +146,7 @@ export class Editor extends Component {
     }
     else {
       this.bgMusicRef.current.pause();
-      this.bgMusicRef.current.currentTime();
+      this.bgMusicRef.current.currentTime = 0;
     }
   }
 
@@ -180,7 +180,7 @@ export class Editor extends Component {
       // 3. play music
       textBoxClassName = 'Good';
       textTitle = "MOMO SAYS…";
-      textContent = "This is my recommended song, hope it cheers you up ❤️";
+      textContent = `Seems you are ${this.state.mood || '...'} now. This is my recommended song, hope it cheers you up ❤️`;
       this.playNarrative('/musics/music_suggestion.mp3');
     }
     else if (characterStatus.showSyntaxError) {
@@ -206,7 +206,7 @@ export class Editor extends Component {
     else if (characterStatus.showPlayGame) {
       // 6. show play game modal
       textBoxClassName = 'Good';
-      textTitle = "TANTAN SAYS…";
+      textTitle = "MOMO SAYS…";
       textContent = "You are a genius, dear master. Can you play game with me? Pls Pls 🙏";
       shouldShowButtons = true;
       this.playNarrative('/musics/play_game.mp3');
@@ -250,6 +250,8 @@ export class Editor extends Component {
                       const xhr = new XMLHttpRequest();
                       xhr.onload = () => {
                         const response = xhr.responseText;
+                        this.setState({ ...this.state, mood:response });
+
                         if(response) {
                           setTimeout(() => {
                             this.setState({
