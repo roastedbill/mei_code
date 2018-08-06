@@ -4,3 +4,5 @@ matplotlib
 pandas
 sklearn
 flask
+paralleldots
+flask_cors

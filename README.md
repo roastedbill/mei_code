@@ -14,11 +14,9 @@ Please let us know if you need any help or have any further idea on this project
 
 1. `npm i`
 2. `npm start`
-3. visit http://localhost:6075/
-4. pip install ./music_suggestion/requirements.txt
-5. export FLASK_APP=api.py
-6. flask run (:5000 by default)
-7. apis:
-	/music_suggestion/<text>
-	/music/<path:filename>
-	/file/<path:filename>
+3. `pip install ./music_suggestion/requirements.txt`
+4. in ./music_suggestion,
+	- for windows users: `export FLASK_APP=api.py`
+	- excute `flask run` (:5000 by default)
+5. visit http://localhost:6075/
+6. enjoy coding~
