@@ -1,4 +1,4 @@
-# MaidCode 魅码
+# MeiCode 魅码
 Web IDE that cares about your feeling rather than just features.
 
 We are serious about this project. I know a lot of us feel lonely and 
