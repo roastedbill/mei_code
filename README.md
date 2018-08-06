@@ -1,5 +1,12 @@
 # MaidCode 魅码
-Web IDE for peace and love.
+Web IDE that cares about your feeling rather than just features.
+
+We are serious about this project. I know a lot of us feel lonely and 
+lack of care from time to time. Don't be shy and keep it to yourself.
+We need to find a way out before it turns worse.
+
+
+Please let us know if you need any help or have any further idea on this project. 
 
 ## Web
 
